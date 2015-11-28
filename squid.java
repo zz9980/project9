@@ -37,7 +37,7 @@ void camera() {
 
 class Squid {
   float x,y;        // Coordinates
-  float dx=0,dy=0;  // Speed
+  float dx=0,dy=-1;  // Speed
   float w=30,h=30;
   int legs=10;      // Number of legs.
   String name="";
@@ -46,6 +46,7 @@ class Squid {
   Squid( float x, float y) {
     this.x=x;
     this.y=y;
+    legs=  int( random(1,10) );
     // Purplish
     r=  random(50,255);
     g=  random(100);
@@ -61,7 +62,7 @@ class Squid {
     // Legs
     fill(r,g,b);               // legs.
     float legX=  x, foot=0;
-    if (dx>0) {
+    if (dx<0) {
       foot=5;
       if (frameCount/30 %  2 > 0) foot=  -foot;
     }
