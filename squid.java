@@ -11,7 +11,7 @@ void setup() {
 }
 // Constuct squid(s).
 void reset() {
-  surface=  random(  height/4, height*3/4 );
+  surface=  random(  height/4, height/2 );
   float squidX=  random(width*0.1, width*0.9);
   otto=  new Squid( squidX, height );
 }
@@ -25,12 +25,13 @@ void draw() {
 void scene() {
   background( 50,100,200 );      // Dark sky.
   fill( 0,150,50 );              // Dark water
+  rect( 0,surface, width, height-surface );
 }
 void action() {
   otto.move();
 }
 void camera() {
-  otto.show();
+  otto.show(); 
 }
 
 
