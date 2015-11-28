@@ -46,6 +46,9 @@ class Squid {
   Squid( float x, float y) {
     this.x=x;
     this.y=y;
+    reset();
+  }
+  void reset() {
     legs=  int( random(1,10) );
     // Purplish
     r=  random(50,255);
@@ -73,5 +76,8 @@ class Squid {
   void move() {
     x += dx;
     y += dy;
+    if (y>surface) {
+      reset();
+    }
   }
 }
