@@ -1,5 +1,5 @@
 //// squids5.java -- array of squid objects
-//// BAM:5b28c;  sample code for project 9
+//// BAM:5c02c;  sample code for project 9
 
 int many=5;
 Squid school[]=  new Squid[many];
