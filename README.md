@@ -1,6 +1,6 @@
 # project9
 
-Study the examplse (squid1, squid3, squid5),  
+Study the examples (squid1, squid3, squid5),  
 then create a new program (squid9.java)  
 that adds an array of boats (at least four),  
 and keys (or buttons) to do the following:
