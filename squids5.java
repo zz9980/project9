@@ -170,7 +170,7 @@ void sortByLegs( Squid[] a ) {
     // Find biggest.
     int k=0;
     for (int i=1; i<m; i++ ) {
-      if (a[i].legs > a[k].legs) k=i;   // k is index of greatest.
+      if (a[i].legs >= a[k].legs) k=i;   // k is index of greatest.
     }
     swap( a, m-1, k );                  // Move biggest to end of array.
   }
@@ -186,6 +186,13 @@ void sortByX( Squid[] a ) {
   }
 }
 void sortByY( Squid[] a ) {
+  for (int m=a.length; m>1; m-- ) {        // Find biggest.
+    int k=0;
+    for (int i=1; i<m; i++ ) {
+      if (a[i].y > a[k].y) k=i;           // k is index of greatest.
+    }
+    swap( a, m-1, k );                    // Move biggest to end of array.
+  }
 }
 void sortByDY( Squid[] a ) {
 }
