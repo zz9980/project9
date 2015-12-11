@@ -2,7 +2,7 @@
 
 int many=5;
 Squid school[]=  new Squid[many];
-String names[]=  { "Arl", "Ben", "Car", "Dom", "Edd" };
+String names[]=  { "Arl", "Ben", "Cay", "Dom", "Edd" };
 float spacing;
 
 
@@ -46,6 +46,7 @@ void reset() {
 void help() {
   background(255);
   textSize(15);
+  fill(0,0,255);
   text( "Pressed 0 key to send 1st squid to the bottom.", 50, 100);
   text( "Pressed 1 key to send 2nd squid to the bottom.", 50, 120);
   text( "Pressed 2 key to send 3rd squid to the bottom.", 50, 140);
@@ -54,24 +55,31 @@ void help() {
   text( "Pressed h key to send highest squid to the bottom.", 50, 200);
   text( "Pressed b key to send all squids to the bottom.", 50, 220);
   text( "Pressed t key to send all squids to the surface.", 50, 240);
-  text( "Pressed any capital key to show fish report and boat report.", 50,260);
-  text( "Pressed any key to exit help." , 50,500); 
+  text( "Pressed any capital letter key to show fish report and boat report.", 50,260);
+  fill(0,255,0);
+  text( "Sorting", 50,300); 
+  text( "Pressed  X key sorts the squids in order of position (x).", 50,320);
+  text( "Pressed  Y key sorts the squids in order of height (y).", 50,340);
+  text( "Pressed  S key sorts the squids in order of speed (dy).", 50,360);
+  text( "Pressed  L key sorts the squids in order of legs.", 50,380);
+  text( "Pressed  B key sorts the boats in order of position (x).", 50,400);
+  text( "Pressed  D key sorts the boats in order of speed (dx).", 50,420);
+  text( "Pressed  F key sorts the boats in order of greatest cargo.", 50,440);
+  fill(255,0,0);
+  text( "Pressed any key to exit." , 50,500); 
   
 }
-
-
-
 
 //// NEXT FRAME:  scene, action
 void draw() {
   scene();
   show();
+   if (key == 'v') {
+    help();
+  }
   if (key >= 'A' && key <= 'Z') {
     boatReport( 50, ships, ships.length );
     fishReport( surface+50, school, school.length);
-  }
-  if (key == 'v') {
-    help();
   }
   else action();
   messages();
@@ -95,17 +103,17 @@ void messages() {
 
 //// METHODS TO MOVE & DRAW.
 void scene() {
-  background( 50,150,200 );      // Dark sky.
+  background( 60,240,255 );      // Dark sky.
   // Moon
   if (moonX > width+100) {
     moonX=  -100;
     moonY=  random( 100, surface+50 );
   }
   moonX += 1;
-  fill( 200,150,50 );
+  fill( 255,255,60 );
   ellipse( moonX, moonY-150*sin( PI * moonX/width ), 40,40 );
   // Dark water.
-  fill( 0,100,50 );
+  fill( 45,10,255 );
   noStroke();
   rect( 0,surface, width, height-surface );  
 }
@@ -182,7 +190,17 @@ void fishReport( float top, Squid[] a, int many ) {
     
 
 //// EVENT HANDLERS:  keys, clicks ////
-void keyPressed() {
+void keyPressed() { 
+  //sorting for squid.
+  if(key == 'L') sortSquidLeg(school,many);
+  if(key == 'Y') sortSquidPosY(school, many);
+  if(key == 'S') sortSquidDY(school, many);
+  if(key == 'X') sortSquidPosX(school, many);
+  //sorting for boat.
+  if(key == 'B') sortBoatPosX( ships, many);
+  if(key == 'D') sortBoatDX( ships, many);
+  if(key == 'F') sortBoatcargo( ships, many);
+  //reset
   if (key == 'r') reset();
   // Send a squid to the bottom!
   if (key == '0') school[0].bottom(); 
@@ -204,7 +222,8 @@ void keyPressed() {
   //// Send all to top or bottom.
   if (key == 'b') {
     for (int k=0; k<many; k++ ) {
-      school[k].bottom();     
+      school[k].bottom();
+      ships[k].suface();
     }
   }
   if (key == 't') {
@@ -212,32 +231,38 @@ void keyPressed() {
       school[k].y=  surface+10;
       school[k].dy=  -0.1  ;
     }
-  }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  } 
 }
 
 
 
+////////////Squid sorting 
 
 
 
-void sortSquidLeg( int a[], int many) {
+void sortSquidLeg( Squid[] a, int many) {
       //shrink the array.
       for (int m=many; m>1; m--) {
       //move biggest to end.
       //set k such that a[k] is biggest
       int k=0;
       for( int j=1; j<m; j++){
-        if (a[j]>a[k]) 
+        if (a[j].legs>a[k].legs) 
+        k=j;
+     }
+    // k now points to the biggest
+    swap( a, m-1, k);
+    }
+   
+}
+void sortSquidPosY( Squid[] a, int many) {
+      //shrink the array.
+      for (int m=many; m>1; m--) {
+      //move biggest to end.
+      //set k such that a[k] is biggest
+      int k=0;
+      for( int j=1; j<m; j++){
+        if (a[j].y>a[k].y) 
         k=j;
      }
     // k now points to the biggest
@@ -246,31 +271,122 @@ void sortSquidLeg( int a[], int many) {
    
 }
 
-
-
-void swap(int[] a, int j, int k){
+void sortSquidDY( Squid[] a, int many) {
+      //shrink the array.
+      for (int m=many; m>1; m--) {
+      //move biggest to end.
+      //set k such that a[k] is biggest
+      int k=0;
+      for( int j=1; j<m; j++){
+        if (a[j].dy>a[k].dy) 
+        k=j;
+     }
+    // k now points to the biggest
+    swap( a, m-1, k);
+    }
+   
+}
+void sortSquidPosX( Squid[] a, int many) {
+      //shrink the array.
+      for (int m=many; m>1; m--) {
+      //move biggest to end.
+      //set k such that a[k] is biggest
+      int k=0;
+      for( int j=1; j<m; j++){
+        if (a[j].x>a[k].x) 
+        k=j;
+     }
+    // k now points to the biggest
+    swap( a, m-1, k);
+    }
+}
+void swap(Squid[] a, int j, int k){
   int tmp;
-  tmp=  a[j];
-  a[j]=  a[k];
-  a[k]=  tmp;
+  tmp=  a[j].legs;
+  a[j].legs=  a[k].legs;
+  a[k].legs=  tmp;
+  
+  float temp;
+  temp=  a[j].y;
+  a[j].y=  a[k].y;
+  a[k].y=  temp;
+  
+  temp=  a[j].dy;
+  a[j].dy=  a[k].dy;
+  a[k].dy=  temp;
+  
+  temp=  a[j].x;
+  a[j].x=  a[k].x;
+  a[k].x=  temp;
+  
 }
 
 
+/////////Boat sorting.
 
 
 
+void sortBoatPosX( Boat[] a, int many) {
+      //shrink the array.
+      for (int m=many; m>1; m--) {
+      //move biggest to end.
+      //set k such that a[k] is biggest
+      int k=0;
+      for( int j=1; j<m; j++){
+        if (a[j].x>a[k].x) 
+        k=j;
+     }
+    // k now points to the biggest
+    swap( a, m-1, k);
+    }    
+}
+void sortBoatDX( Boat[] a, int many) {
+      //shrink the array.
+      for (int m=many; m>1; m--) {
+      //move biggest to end.
+      //set k such that a[k] is biggest
+      int k=0;
+      for( int j=1; j<m; j++){
+        if (a[j].dx>a[k].dx) 
+        k=j;
+     }
+    // k now points to the biggest
+    swap( a, m-1, k);
+    }    
+}
 
+void sortBoatcargo( Boat[] a, int many) {
+      //shrink the array.
+      for (int m=many; m>1; m--) {
+      //move biggest to end.
+      //set k such that a[k] is biggest
+      int k=0;
+      for( int j=1; j<m; j++){
+        if (a[j].cargo>a[k].cargo) 
+        k=j;
+     }
+    // k now points to the biggest
+    swap( a, m-1, k);
+    }    
+}
 
+void swap(Boat[] a, int j, int k){
+  
+   int tmp;
+  tmp=  a[j].x;
+  a[j].x=  a[k].x;
+  a[k].x=  tmp;
+ 
+  float temp;
+  temp=  a[j].dx;
+  a[j].dx=  a[k].dx;
+  a[k].dx=  temp;
+  
+  tmp=  a[j].cargo;
+  a[j].cargo=  a[k].cargo;
+  a[k].cargo=  tmp;
 
-
-
-
-
-
-
-
-
-
+}
 
 //// OBJECTS ////
 
@@ -378,6 +494,11 @@ class Boat {
     }
   }
   //// Draw the boat.
+   void suface() {
+     x= int( random(1,100));
+   }
+  
+ 
   void show() {
     // Boat.
     fill(255,0,0);
