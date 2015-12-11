@@ -2,13 +2,13 @@
 
 int many=5;
 Squid school[]=  new Squid[many];
-String names[]=  { "Otto", "Nono", "Deca", "Ariel", "Ursala" };
+String names[]=  { "Arl", "Ben", "Car", "Dom", "Edd" };
 float spacing;
 
 
 int lin=5;
 Boat ships[]= new Boat[lin];
-
+String boatnames[]=  { "A", "B", "C", "D", "E" };
 
 //Boat bounty=  new Boat();
 
@@ -21,10 +21,10 @@ void setup() {
   size( 800, 600 );
   spacing=  width/(many+1);
   reset();
-  
+  help();
  
   for ( int i=0; i<lin; i++){
-    ships[i]= new Boat(int (random(0,width)));
+    ships[i]= new Boat(int (random(0,width)), boatnames[i]);
   }
   
   
@@ -43,24 +43,47 @@ void reset() {
   //bounty.name=  "Bounty";
 }
 
+void help() {
+  background(255);
+  textSize(15);
+  text( "Pressed 0 key to send 1st squid to the bottom.", 50, 100);
+  text( "Pressed 1 key to send 2nd squid to the bottom.", 50, 120);
+  text( "Pressed 2 key to send 3rd squid to the bottom.", 50, 140);
+  text( "Pressed 3 key to send 4th squid to the bottom.", 50, 160);
+  text( "Pressed 3 key to send 5th squid to the bottom.", 50, 180);
+  text( "Pressed h key to send highest squid to the bottom.", 50, 200);
+  text( "Pressed b key to send all squids to the bottom.", 50, 220);
+  text( "Pressed t key to send all squids to the surface.", 50, 240);
+  text( "Pressed any capital key to show fish report and boat report.", 50,260);
+  text( "Pressed any key to exit help." , 50,500); 
+  
+}
+
+
+
 
 //// NEXT FRAME:  scene, action
 void draw() {
   scene();
   show();
   if (key >= 'A' && key <= 'Z') {
-    //boatReport( 50, bounty, 1 );
+    boatReport( 50, ships, ships.length );
     fishReport( surface+50, school, school.length);
+  }
+  if (key == 'v') {
+    help();
   }
   else action();
   messages();
+
 }
 void messages() {
   fill(0);
   textSize( 20 );
-  text( "Squid School", width/3, 20 );
+  text( "Fishing", width/3, 20 );
   textSize(12);
   text( "Hold B key to show all boats and fish", width/3, 40 );
+  text( "Pressed v key for help", width/3, 60 );
   text( "Teng Lin:  Project 9", 10, height-10 );
   if (score>0) text( "SCORE:  "+score, width*3/4, 20 );
   if (score>900) {
@@ -113,7 +136,7 @@ void show() {
 
 //// SUMMARIES:  List all objects in the array.
 // Display the properties of each object in the array.
-void boatReport( float top, Boat b, int many ) {
+void boatReport( float top, Boat[] b, int many ) {
   fill(255,200,200);
   rect( 50,top, width-100, 50 + 20*many );
   float x=70, y=top+20;
@@ -125,12 +148,14 @@ void boatReport( float top, Boat b, int many ) {
   text( "dx", x+205, y );
   fill(0);
   //
-  y += 15;
-  text( 1, x, y );
-  text( b.name, x+20, y );
-  text( b.cargo, x+70, y );
-  text( b.x, x+100, y );
-  text( b.dx, x+200, y );
+   for (int i=0; i<many; i++) {
+    y += 15;    // Next line.
+    text( i, x, y );
+    text( b[i].name, x+20, y );
+    text( b[i].cargo, x+70, y );
+    text( b[i].x, x+100, y );
+    text( b[i].dx, x+200, y );
+  }
 }
 void fishReport( float top, Squid[] a, int many ) {
   fill(255,255,200);
@@ -163,7 +188,8 @@ void keyPressed() {
   if (key == '0') school[0].bottom(); 
   if (key == '1') school[1].bottom(); 
   if (key == '2') school[2].bottom(); 
-  if (key == '3') school[3].bottom(); 
+  if (key == '3') school[3].bottom();
+  if (key == '4') school[4].bottom();
   //// Send highest to bottom.
   if (key == 'h') {
     int k=0;
@@ -172,6 +198,8 @@ void keyPressed() {
     }
     school[k].bottom();     
   }
+  
+  
   // Cheat codes:
   //// Send all to top or bottom.
   if (key == 'b') {
@@ -185,7 +213,49 @@ void keyPressed() {
       school[k].dy=  -0.1  ;
     }
   }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 }
+
+
+
+
+
+
+void sortSquidLeg( int a[], int many) {
+      //shrink the array.
+      for (int m=many; m>1; m--) {
+      //move biggest to end.
+      //set k such that a[k] is biggest
+      int k=0;
+      for( int j=1; j<m; j++){
+        if (a[j]>a[k]) 
+        k=j;
+     }
+    // k now points to the biggest
+    swap( a, m-1, k);
+    }
+   
+}
+
+
+
+void swap(int[] a, int j, int k){
+  int tmp;
+  tmp=  a[j];
+  a[j]=  a[k];
+  a[k]=  tmp;
+}
+
+
 
 
 
@@ -281,12 +351,10 @@ class Boat {
   int cargo=0, caught=0;
   
   
-  Boat( int tempx) {
+  Boat( int tempx, String temps) {
     x=tempx;
-  
+    name=temps;
   }
-  
-  
   void move() {
     //// Fish before move:  check each squid.
     int caught=0;
@@ -332,4 +400,3 @@ class Boat {
     ellipse( x +20 -30*dx, surface-70, 8, 5 );
   }    
 }
-
