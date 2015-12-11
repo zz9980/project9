@@ -51,20 +51,24 @@ void help() {
   text( "Pressed 1 key to send 2nd squid to the bottom.", 50, 120);
   text( "Pressed 2 key to send 3rd squid to the bottom.", 50, 140);
   text( "Pressed 3 key to send 4th squid to the bottom.", 50, 160);
-  text( "Pressed 3 key to send 5th squid to the bottom.", 50, 180);
-  text( "Pressed h key to send highest squid to the bottom.", 50, 200);
-  text( "Pressed b key to send all squids to the bottom.", 50, 220);
-  text( "Pressed t key to send all squids to the surface.", 50, 240);
-  text( "Pressed any capital letter key to show fish report and boat report.", 50,260);
-  fill(0,255,0);
-  text( "Sorting", 50,300); 
-  text( "Pressed  X key sorts the squids in order of position (x).", 50,320);
-  text( "Pressed  Y key sorts the squids in order of height (y).", 50,340);
-  text( "Pressed  S key sorts the squids in order of speed (dy).", 50,360);
-  text( "Pressed  L key sorts the squids in order of legs.", 50,380);
-  text( "Pressed  B key sorts the boats in order of position (x).", 50,400);
-  text( "Pressed  D key sorts the boats in order of speed (dx).", 50,420);
-  text( "Pressed  F key sorts the boats in order of greatest cargo.", 50,440);
+  text( "Pressed 4 key to send 5th squid to the bottom.", 50, 180);
+  fill(255,100,0);
+  text( "<Cheat Codes>", 50,200);
+  text( "Pressed h key to send highest squid to the bottom.", 50, 220);
+  text( "Pressed b key to send all squids to the bottom.", 50, 240);
+  text( "Pressed t key to send all squids to the surface.", 50, 260);
+  fill(10,50,60);
+  text( "<Reports>", 50, 280);
+  text( "Pressed any capital letter key to show fish report and boat report.", 50,300);
+  fill(50,200,60);
+  text( "<Sorting>", 50,320); 
+  text( "Pressed  X key sorts the squids in order of position (x).", 50,340);
+  text( "Pressed  Y key sorts the squids in order of height (y).", 50,360);
+  text( "Pressed  S key sorts the squids in order of speed (dy).", 50,380);
+  text( "Pressed  L key sorts the squids in order of legs.", 50,400);
+  text( "Pressed  B key sorts the boats in order of position (x).", 50,420);
+  text( "Pressed  D key sorts the boats in order of speed (dx).", 50,440);
+  text( "Pressed  F key sorts the boats in order of greatest cargo.", 50,460);
   fill(255,0,0);
   text( "Pressed any key to exit." , 50,500); 
   
@@ -74,6 +78,7 @@ void help() {
 void draw() {
   scene();
   show();
+  dock();
    if (key == 'v') {
     help();
   }
@@ -83,7 +88,18 @@ void draw() {
   }
   else action();
   messages();
-
+}
+void dock(){
+  float len=80;
+  stroke(10);
+  line(0, surface-30, len, surface-30);
+  
+  for(int i=0; i<=len;i=i+15) {
+   stroke(10);
+   line( i , surface, i, surface-30);
+  }
+  
+  noStroke();
 }
 void messages() {
   fill(0);
@@ -465,6 +481,7 @@ class Boat {
   float y=surface, dx=5;
   int x=0;
   int cargo=0, caught=0;
+  float r=random(0,255), g=random(0,255), b=random(0,255);
   
   
   Boat( int tempx, String temps) {
@@ -475,8 +492,9 @@ class Boat {
     //// Fish before move:  check each squid.
     int caught=0;
     for (int i=0; i<many; i++ ) {
-    if (school[i].hit( ships[i].x, surface )) {
+    if (school[i].hit( x, surface )) {
         caught += school[i].legs;
+        school[i].bottom();     
       }
      
     }
@@ -484,7 +502,7 @@ class Boat {
     //// Now, move the boat.
     x += dx;
     if (caught>0) x += 2*dx;      //  Jump after catch.
-    if (x<0) {
+    if (x<90) {
       score += cargo;            // Add cargo to global score.
       cargo=0;
       dx = random( 1, 5 );      // Variable boat speed.
@@ -501,7 +519,7 @@ class Boat {
  
   void show() {
     // Boat.
-    fill(255,0,0);
+    fill(r,g,b);
     noStroke();
     rect( x, surface-20, 50, 20 );
     if (dx>0)   triangle( x+50,surface, x+50,surface-20, x+70,surface-20 );
@@ -515,9 +533,23 @@ class Boat {
     fill(0);
     if (cargo>0) text( cargo, x+20, surface );
     // Smoke
+    int k= frameCount/30%2;
+    if (k==0) {
     fill( 50,50,50, 200 );
     ellipse( x +20 -10*dx, surface-50, 20, 20 );
     ellipse( x +20 -20*dx, surface-60, 15, 10 );
     ellipse( x +20 -30*dx, surface-70, 8, 5 );
-  }    
+   }   
+   else{
+   } 
+ }
+
 }
+
+
+
+
+
+
+
+
